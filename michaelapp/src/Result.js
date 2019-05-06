@@ -1,16 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './Header.css';
+import './Result.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-class Header extends React.Component {
+
+
+class Result extends React.Component {
     render() {
       return (
-        <div class='header'>Header</div>
-      );
+        <div className='Result'></div>
+      )
     }
-  }
-  
-  export default Header;
+}
 
+
+
+export default Result;
