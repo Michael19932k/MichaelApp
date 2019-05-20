@@ -1,5 +1,4 @@
 .Result{
-    background: green;
-    width: 100px;
-    height: 100px;
+    width: 100vw;
+    height: 80vh;
 }
