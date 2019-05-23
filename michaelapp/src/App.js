@@ -22,10 +22,10 @@ export default function App() {
     <div>
       <Logo />
       {/* <Result /> */}
-      <div style={{ width: "100vw", height: "100vh" }}>
+      <div class='Result' style={{ width: "100vw", height: "80vh" }}>
         <WrappedMap googleMapURL={"https://maps.googleapis.com/maps/api/js?key=AIzaSyBuF65jbesGB7LTrp7hlmLVKzPhuYlB62o&v=3.exp&libraries=geometry,drawing,places"}
-          loadingElement={<div style={{ height: `100%` }} />}
-          containerElement={<div style={{ height: `400px` }} />}
+          loadingElement={<div style={{ height: `80vh` }} />}
+          containerElement={<div style={{ height: `80vh` }} />}
           mapElement={<div style={{ height: `100%` }} />}
         /></div>
       <NavBar />
