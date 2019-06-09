@@ -18,7 +18,7 @@ function SignUpBox() {
                 <div class="input-wrapper">
                     <input type="password" placeholder="password" />
                 </div>
-                <button id="continue" type="button">CONTINUE</button>
+                <button id="continue" className="buttonn">CONTINUE</button>
             </fieldset>
         </div>)
 

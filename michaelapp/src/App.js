@@ -3,6 +3,9 @@ import './App.css';
 import BackgroundAnimation from './BackgroundAnimation';
 import SignUpBox from './SignUpBox';
 import NavButtonMenu from './NavButtonMenu';
+import { BrowserRouter as Router, Link, Route } from "react-router-dom";
+import LinkWindow from './LinkWindow';
+import ChatBox from './ChatBox';
 
 
 
@@ -12,12 +15,15 @@ import NavButtonMenu from './NavButtonMenu';
 
 export default function App() {
   return (
-    <div>
-      <BackgroundAnimation />
-      {/* <SignUpBox /> */}
-      <NavButtonMenu />
+    <Router>
+      <div>
+        <BackgroundAnimation />
+        {/* <ChatBox /> */}
+        <Route exact path="/" component={NavButtonMenu} />
+        <Route path="/LinkWindow" component={LinkWindow} />
     </div>
-  );
-}
-
-
+      </Router>
+        );
+      }
+      
+      

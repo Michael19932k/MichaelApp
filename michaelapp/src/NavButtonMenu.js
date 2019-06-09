@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './NavButtonMenu.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { BrowserRouter as Router, Link, Route } from "react-router-dom";
 
 
 
@@ -16,9 +17,9 @@ function NavButtonMenu() {
 
         <div className="buttonWrapper">
             <div className="btn-group">
-                <button className="button button1">Flash Chat</button>
-                <button className="button button2">Log In</button>
-                <button className="button button3">Sign Up</button>
+                <Link to={"/LinkWindow"} className='buttonS'>FlashChat</Link>
+                <Link className="buttonS">Log In</Link>
+                <Link className="buttonS">Sign Up</Link>
             </div>
         </div>)
 }

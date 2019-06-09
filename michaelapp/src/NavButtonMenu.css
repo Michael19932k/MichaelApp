@@ -1,38 +1,32 @@
-.buttonWrapper{
-    position: absolute;
-    height: 100vh;
-    width: 100vw;
-    margin: auto;
-    display: flex;
-    justify-content: center;
-    z-index: 1; 
-    align-items: center;
+.buttonWrapper {
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  margin: auto;
+  display: flex;
+  z-index: 1;
+  align-items: center;
+  justify-content: center;
 }
+
 .btn-group {
-    display: flex;
-    width: 50vw;
-    color: white; 
-    padding: 10px 24px; 
-    cursor: pointer; 
-    float: left;
-  }
-  
-  /* Clear floats (clearfix hack) */
-  .btn-group:after {
-    content: "";
-    clear: both;
-    display: table;
-  }
-  
-  .btn-group button:not(:last-child) {
-    border-right: none; /* Prevent double borders */
-  }
-  
-  /* Add a background color on hover */
-  .btn-group button:hover {
-    background-color: #3e8e41;
-    color: orange;
-  }
-  .button {
-      font-size: 16px;
-  }
+  display: flex;
+}
+.buttonS:hover {
+  background-color: #3e8e41;
+  color: orange;
+}
+.buttonS {
+  display: flex;
+  color: white;
+  height: 7vh;
+  width: 10vw;
+  margin: 3vw;
+  font-size: 16px;
+  cursor: pointer;
+  color: white;
+  background-color: rgb(223, 127, 3);
+  align-items: center;
+  justify-content: center;
+}
+

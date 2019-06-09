@@ -1,3 +1,6 @@
+a {
+  all: unset;
+}
 .App {
   text-align: center;
 }
