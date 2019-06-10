@@ -18,9 +18,9 @@ export default function App() {
     <Router>
       <div>
         <BackgroundAnimation />
-        {/* <ChatBox /> */}
         <Route exact path="/" component={NavButtonMenu} />
         <Route path="/LinkWindow" component={LinkWindow} />
+        <Route path="/ChatBox" component={ChatBox} />
     </div>
       </Router>
         );

@@ -19,7 +19,7 @@ function LinkWindow() {
                     </input> &larr;Press here to generate token</div><input onClick={fetchLink} type="button" value="Generate"></input></form>
                 <form>
                     <div><input type="text">
-                    </input> &larr;Please enter your token here</div><input type="submit" value="Submit"></input></form>
+                    </input> &larr;Please enter your token here</div><Link to={"/ChatBox"}><input type="submit" value="Submit"></input></Link></form>
                 <Link to={"/"} className='getToMain'>Get Back</Link>
 
 
