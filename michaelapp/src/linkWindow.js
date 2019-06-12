@@ -6,20 +6,22 @@ import * as serviceWorker from './serviceWorker';
 import { defaultCipherList } from 'constants';
 import { BrowserRouter as Router, Link, Route } from "react-router-dom";
 
-function LinkWindow() {
+function LinkWindow(props) {
     const [tokenValue, settokenValue] = useState("");
     const [userName, setuserName] = useState("");
+    const [passToken, setpassToken] = useState("");
+    
     return (
         <div className="LinkWindow">
             <div className="minorLinkWindowWrapper">
-                <form>
-                    <div><input type="text" value={userName} onChange={e => setuserName(e.target.value)}>
+                <form onSubmit={nameToken}>
+                    <div><input type="text" required value={userName} onChange={e => setuserName(e.target.value)}>
                     </input> &larr;Type your nick name</div>
+                    <div><input type="text" value={passToken} onChange={e => setpassToken(e.target.value)}>
+                    </input> &larr;Please enter your token here</div><input  type="submit" value="Submit"></input></form>
+                <form>
                     <div><input type="text" value={tokenValue} readOnly>
                     </input> &larr;Press here to generate token</div><input onClick={fetchLink} type="button" value="Generate"></input></form>
-                <form>
-                    <div><input type="text">
-                    </input> &larr;Please enter your token here</div><Link to={"/ChatBox"}><input type="submit" value="Submit"></input></Link></form>
                 <Link to={"/"} className='getToMain'>Get Back</Link>
 
 
@@ -31,10 +33,10 @@ function LinkWindow() {
 
     )
     function fetchLink() {
-        var loh = "pipi"
+        var createRoomId = "Id"
         fetch('http://localhost:3001/kaki', {
             method: 'POST',
-            body: JSON.stringify({ loh }),
+            body: JSON.stringify({ createRoomId }),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -45,6 +47,24 @@ function LinkWindow() {
             })
             .catch(error => console.error('Error:', error));
 
+
+    }
+    function nameToken(e){
+        e.preventDefault()
+        fetch('http://localhost:3001/pipi', {
+            method: 'POST',
+            body: JSON.stringify({ userName,passToken }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(res => res.json())
+            .then(response => {
+                console.log(response)
+                if (response.success) {
+                      props.history.push('/ChatBox');
+                }
+            })
+            .catch(error => console.error('Error:', error));
 
     }
 }

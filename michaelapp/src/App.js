@@ -3,7 +3,7 @@ import './App.css';
 import BackgroundAnimation from './BackgroundAnimation';
 import SignUpBox from './SignUpBox';
 import NavButtonMenu from './NavButtonMenu';
-import { BrowserRouter as Router, Link, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import LinkWindow from './LinkWindow';
 import ChatBox from './ChatBox';
 
