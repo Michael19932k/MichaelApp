@@ -10,18 +10,20 @@ function LinkWindow(props) {
     const [tokenValue, settokenValue] = useState("");
     const [userName, setuserName] = useState("");
     const [passToken, setpassToken] = useState("");
-    
+
+    localStorage.setItem("name", { userName });
+    console.log(localStorage.getItem("name"))
+
     return (
         <div className="LinkWindow">
             <div className="minorLinkWindowWrapper">
                 <form onSubmit={nameToken}>
                     <div><input type="text" required value={userName} onChange={e => setuserName(e.target.value)}>
                     </input> &larr;Type your nick name</div>
-                    <div><input type="text" value={passToken} onChange={e => setpassToken(e.target.value)}>
-                    </input> &larr;Please enter your token here</div><input  type="submit" value="Submit"></input></form>
-                <form>
-                    <div><input type="text" value={tokenValue} readOnly>
-                    </input> &larr;Press here to generate token</div><input onClick={fetchLink} type="button" value="Generate"></input></form>
+                    <div><input type="text" value={tokenValue} onChange={e => settokenValue(e.target.value)}>
+                    </input> &larr;Please enter your token here</div>
+                    <input onClick={fetchLink} type="button" value="Generate"></input>
+                    <input type="submit" value="Submit"></input></form>
                 <Link to={"/"} className='getToMain'>Get Back</Link>
 
 
@@ -49,19 +51,21 @@ function LinkWindow(props) {
 
 
     }
-    function nameToken(e){
+    function nameToken(e) {
         e.preventDefault()
         fetch('http://localhost:3001/pipi', {
             method: 'POST',
-            body: JSON.stringify({ userName,passToken }),
+            body: JSON.stringify({ userName, tokenValue }),
             headers: {
                 'Content-Type': 'application/json'
             }
         }).then(res => res.json())
             .then(response => {
                 console.log(response)
+                console.log(tokenValue)
                 if (response.success) {
-                      props.history.push('/ChatBox');
+                    localStorage.setItem("name", `${userName}`)
+                    props.history.push(`/rooms/${tokenValue}`)
                 }
             })
             .catch(error => console.error('Error:', error));

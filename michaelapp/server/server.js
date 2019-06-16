@@ -125,32 +125,33 @@ var messages_instance = new messagesModel({name: 'awesome', message: "bla", date
 //     if (err) return handleError(err);
 //     console.log('saved')
 // });
-if (arguments.create) {
-    newMessage.save(function (err) {
-      if (err) return handleError(err);
-      console.log('saved')
-    });
-  }
+let name 
+
+// if (arguments.create) {
+//     newMessage.save(function (err) {
+//       if (err) return handleError(err);
+//       console.log('saved')
+//     });
+//   }
   
   app.use(cors());
 
 io.on('connection', function(socket){
     console.log('a user connected');
-  
     
-  
-    socket.on('chat message', function(msg){
+    
+    socket.on('chat message', function(msg,name){
       
   
       //save message to db
-      let newMessage = new messagesModel({ name: 'me', message: msg, date: new Date() });
+      let newMessage = new messagesModel({ name: name, message: msg, date: new Date() });
       newMessage.save(function (err) {
         if (err) return handleError(err);
         console.log('saved')
       });
   
       console.log('message: ' + msg);
-      io.emit('chat message', { name: 'me', message: msg, date: new Date() }  );
+      io.emit('chat message', { name: "name", message: msg, date: new Date() }  );
     });
   
     socket.on('disconnect', function(){
@@ -163,11 +164,13 @@ io.on('connection', function(socket){
   });
   
   
-  app.get('/messages', (req, res) => {
+  app.post('/messages', (req, res) => {
+    let name = req.body.name
     messagesModel.find({}, (err, docs) => {
+        
       if (err) throw err;
      
-      res.send({ messages: docs })
+      res.send({ "messages": docs })
     }).sort({ 'date':-1 }).limit(20)
   })
 
@@ -184,35 +187,6 @@ io.on('connection', function(socket){
 
 
 
-// app.get('/getUsers', (req, res) => {
-//     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
-//         if (err) throw err;
-//         var dbo = db.db("nodechef-mongo");
 
-//         var mysort = { name: -1 };
-//         dbo.collection("customers").find().sort(mysort).toArray(function (err, result) {
-//             if (err) throw err;
-//             res.send(result)
-//             db.close();
-//         });
-//     });
-// })
-
-// app.post('/addUser', (req, res) => {
-//     let newUser = req.body;
-
-//     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
-//         if (err) throw err;
-//         var dbo = db.db("nodechef-mongo");
-
-//         var mysort = { name: -1 };
-//         dbo.collection("customers").insertOne(newUser, (function (err, result) {
-//             if (err) throw err;
-//             res.send(result)
-//             db.close();
-//         })
-//         );
-//     });
-// })
 
 app.listen(port, () => console.log(`server listening on port ${port}!!!`))
