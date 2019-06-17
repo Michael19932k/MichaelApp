@@ -110,7 +110,8 @@ var users_instance = new usersModel({ name: '', rooms: "" });
 const messagesSchema = new Schema({
     name: String,
     message: String,
-    date: Date
+    date: Date,
+    room:String
 });
 
 
@@ -118,61 +119,75 @@ const messagesSchema = new Schema({
 const messagesModel = mongoose.model('messages', messagesSchema);
 
 // Create an instance of model SomeModel
-var messages_instance = new messagesModel({name: 'awesome', message: "bla", date: new Date() });
+var messages_instance = new messagesModel({ name: 'awesome', message: "bla", date: new Date() });
 
-// Save the new model instance, passing a callback
-// messages_instance.save(function (err) {
-//     if (err) return handleError(err);
-//     console.log('saved')
-// });
-let name 
 
-// if (arguments.create) {
-//     newMessage.save(function (err) {
-//       if (err) return handleError(err);
-//       console.log('saved')
+let name;
+
+app.use(cors());
+
+// io.on('connection', function (socket) {
+//     console.log('a user connected');
+
+
+//     socket.on('chat message', function (msg, name) {
+
+
+//         //save message to db
+//         let newMessage = new messagesModel({ name: name, message: msg, date: new Date() });
+//         newMessage.save(function (err) {
+//             if (err) return handleError(err);
+//             console.log('saved')
+//         });
+
+//         console.log('message: ' + msg);
+//         io.emit('chat message', { name: "name", message: msg, date: new Date() });
 //     });
-//   }
-  
-  app.use(cors());
 
-io.on('connection', function(socket){
-    console.log('a user connected');
-    
-    
-    socket.on('chat message', function(msg,name){
-      
-  
-      //save message to db
-      let newMessage = new messagesModel({ name: name, message: msg, date: new Date() });
-      newMessage.save(function (err) {
-        if (err) return handleError(err);
-        console.log('saved')
-      });
-  
-      console.log('message: ' + msg);
-      io.emit('chat message', { name: "name", message: msg, date: new Date() }  );
+//     socket.on('disconnect', function () {
+//         console.log('user disconnected');
+//     });
+// });
+
+io.sockets.on('connection', function (socket) {
+    socket.on('subscribe', function (room) {
+        console.log('joining room', room);
+        socket.join(room);
+    })
+
+    socket.on('unsubscribe', function (room) {
+        console.log('leaving room', room);
+        socket.leave(room);
+    })
+
+    socket.on('send', function (data) {
+        console.log('sending message', data);
+        
+        // save message to db
+        let newMessage = new messagesModel({ name: data.name, message: data.message, date: new Date(), room:data.room });
+        newMessage.save(function (err) {
+            if (err) return handleError(err);
+            console.log('saved')
+        });
+
+        io.sockets.in(data.room).emit('message', data);
     });
-  
-    socket.on('disconnect', function(){
-      console.log('user disconnected');
-    });
-  });
-  
-  http.listen(4000, function(){
+});
+
+http.listen(4000, function () {
     console.log('listening on *:4000');
-  });
-  
-  
-  app.post('/messages', (req, res) => {
+});
+
+
+app.post('/messages', (req, res) => {
     let name = req.body.name
     messagesModel.find({}, (err, docs) => {
-        
-      if (err) throw err;
-     
-      res.send({ "messages": docs })
-    }).sort({ 'date':-1 }).limit(20)
-  })
+
+        if (err) throw err;
+
+        res.send({ "messages": docs })
+    }).sort({ 'date': -1 }).limit(20)
+})
 
 
 

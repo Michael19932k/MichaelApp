@@ -18,29 +18,34 @@ function ChatBox({ match }, e, props) {
     const [messages, setMessages] = useState([]);
     const containerRef = useRef(null);
     let room = match.params.id
-    
+
 
     useEffect(() => {
-        socket.on('chat message', newMessage => {
-            tempSocketMessages.push(newMessage)
+       
+        // fetch('http://localhost:4000/messages', {
+        //     method: 'POST',
+        //     body: JSON.stringify({ name }),
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     }
+        // }).then(res => res.json())
+        //     .then(response => {
+        //         let newOrder = response.messages.reverse();
+        //         setMessages(response.messages);
+        //     })
+        //     .catch(error => console.error('Error:', error))    
+
+        
+        socket.on('message', function (data) {
+            console.log(data);
+            tempSocketMessages.push(data.message)
             setNewMsgs(counter + 1);
             counter++;
             console.log(newMsgs)
-        })
-        fetch('http://localhost:4000/messages', {
-            method: 'POST',
-            body: JSON.stringify({ name }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(res => res.json())
-            .then(response => {
-                let newOrder = response.messages.reverse();
-                setMessages(response.messages);
-            })
-            .catch(error => console.error('Error:', error))
+        });
 
-        console.log('use effect init')
+        socket.emit('subscribe', room);
+        
     }, []);
 
     useEffect(() => {
@@ -62,20 +67,22 @@ function ChatBox({ match }, e, props) {
                     }
                     {
                         tempSocketMessages.map((message, index) => {
-                            console.log(tempSocketMessages)
-                            return <p key={index + 'socket'}>{message.message}</p>
+                            console.log(message)
+                            return <p key={index + 'socket'}>{message}</p>
                         })
                     }
                 </div>
                 <div className="ChatInputArea">
                     <div className="messageInputWrapper">
                         <textarea className="messageTypingSpot" type="text" autoFocus={true} onKeyUp={(e) => {
-                            if (e.key === 'Enter') {
-                                socket.emit("chat message", e.target.value, name);
+                            if (e.key === 'Enter') {                               
+                                console.dir(name)
+                                socket.emit('send', { room, message: e.target.value, date:new Date(), name});
+                              
                                 e.target.value = '';
                             }
                         }} ></textarea>
-                        {/* <input className="ChatInputButton" type="submit" value="Enter"></input> */}
+                     
                     </div></div>
 
             </div>
