@@ -20,7 +20,6 @@ export default function App() {
         <BackgroundAnimation />
         <Route exact path="/" component={NavButtonMenu} />
         <Route path="/LinkWindow" component={LinkWindow} />
-        {/* <Route path="/ChatBox" component={ChatBox} /> */}
         <Route path="/rooms/:id" component={ChatBox} />
     </div>
       </Router>

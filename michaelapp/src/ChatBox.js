@@ -8,13 +8,17 @@ import React, { useState, useEffect, useRef } from "react";
 import socketIOClient from "socket.io-client";
 import { animateScroll as scroll } from "react-scroll";
 
+const io = require("socket.io-client")
 const socket = socketIOClient('http://localhost:4000/');
 let tempSocketMessages = [];
+let tempSocketNames = [];
 let counter = 0;
+let counterr = 0;
 
 function ChatBox({ match }, e, props) {
     let name = localStorage.getItem("name");
     const [newMsgs, setNewMsgs] = useState(0);
+    const [newNames, setnewNames] = useState(0);
     const [messages, setMessages] = useState([]);
     const containerRef = useRef(null);
     let room = match.params.id
@@ -43,8 +47,14 @@ function ChatBox({ match }, e, props) {
             counter++;
             console.log(newMsgs)
         });
+        socket.on('subscribe', function (name) {
+            tempSocketNames.push(name)
+            setnewNames(counterr + 1);
+            counterr++;
+            console.log(newNames)
+        });
 
-        socket.emit('subscribe', room);
+        socket.emit('subscribe',name);
         
     }, []);
 
@@ -57,7 +67,20 @@ function ChatBox({ match }, e, props) {
     return (
         <div className="gridWrapper">
             <div className="original-grid-container">
-                <div className="NickNamesArea"></div>
+                <div className="NickNamesArea">
+                {
+                        messages.map((message, sidename) => {
+
+                            return <p key={sidename}>{message.name}</p>
+                        })
+                    }
+                    {
+                        tempSocketNames.map((message, sidename) => {
+                         
+                            return <p key={sidename + 'socket'}>{message.name}</p>
+                        })
+                    }
+                </div>
                 <div className="ChatArea">
                     {
                         messages.map((message, index) => {
@@ -76,9 +99,7 @@ function ChatBox({ match }, e, props) {
                     <div className="messageInputWrapper">
                         <textarea className="messageTypingSpot" type="text" autoFocus={true} onKeyUp={(e) => {
                             if (e.key === 'Enter') {                               
-                                console.dir(name)
                                 socket.emit('send', { room, message: e.target.value, date:new Date(), name});
-                              
                                 e.target.value = '';
                             }
                         }} ></textarea>

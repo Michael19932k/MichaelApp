@@ -23,6 +23,7 @@ app.post('/kaki', function (req, res) {
     insertOne.save(function (err, insertOne) {
         var roomId = insertOne.id
         res.send({ roomId })
+        console.log(roomId)
         if (err) return console.error(err);
     });
 
@@ -150,9 +151,10 @@ app.use(cors());
 // });
 
 io.sockets.on('connection', function (socket) {
-    socket.on('subscribe', function (room) {
+    socket.on('subscribe', function (room,name) {
         console.log('joining room', room);
         socket.join(room);
+        socket.emit('message', name);
     })
 
     socket.on('unsubscribe', function (room) {
@@ -167,7 +169,7 @@ io.sockets.on('connection', function (socket) {
         let newMessage = new messagesModel({ name: data.name, message: data.message, date: new Date(), room:data.room });
         newMessage.save(function (err) {
             if (err) return handleError(err);
-            console.log('saved')
+            console.log('data')
         });
 
         io.sockets.in(data.room).emit('message', data);
