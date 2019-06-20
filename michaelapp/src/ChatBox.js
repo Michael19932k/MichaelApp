@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Link, Route } from "react-router-dom";
 import React, { useState, useEffect, useRef } from "react";
 import socketIOClient from "socket.io-client";
 import { animateScroll as scroll } from "react-scroll";
+import { tsNamespaceExportDeclaration } from '@babel/types';
 
 const socket = socketIOClient('http://localhost:4000/');
 let tempSocketMessages = [];
@@ -16,6 +17,7 @@ function ChatBox({ match }, e, props) {
     let name = localStorage.getItem("name");
     const [newMsgs, setNewMsgs] = useState(0);
     const [messages, setMessages] = useState([]);
+    const [names, setNames] = useState([]);
     const containerRef = useRef(null);
     let room = match.params.id
 
@@ -45,6 +47,12 @@ function ChatBox({ match }, e, props) {
         });
 
         socket.emit('subscribe', room);
+        socket.emit('beimshch', {a:1,b:2})
+        socket.emit('name', name);
+        socket.on('name', name=>{
+            console.log('name was recived', name)
+           setNames([...names, name])
+        })
         
     }, []);
 
@@ -57,7 +65,16 @@ function ChatBox({ match }, e, props) {
     return (
         <div className="gridWrapper">
             <div className="original-grid-container">
-                <div className="NickNamesArea"></div>
+                <div className="NickNamesArea">
+                    {
+                        names.map((name, index)=>{
+                            return (
+                                <p key={index}>{name}</p>
+                            )
+                        })
+                    }
+
+                </div>
                 <div className="ChatArea">
                     {
                         messages.map((message, index) => {

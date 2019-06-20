@@ -111,7 +111,7 @@ const messagesSchema = new Schema({
     name: String,
     message: String,
     date: Date,
-    room:String
+    room: String
 });
 
 
@@ -155,16 +155,24 @@ io.sockets.on('connection', function (socket) {
         socket.join(room);
     })
 
+    socket.on('name', name => {
+        console.log('some name enterd the room', name)
+        socket.emit('name', name)
+    })
     socket.on('unsubscribe', function (room) {
         console.log('leaving room', room);
         socket.leave(room);
     })
+    socket.on('beimshch', beimshch => {
+        console.log(beimshch)
+    })
+
 
     socket.on('send', function (data) {
         console.log('sending message', data);
-        
+
         // save message to db
-        let newMessage = new messagesModel({ name: data.name, message: data.message, date: new Date(), room:data.room });
+        let newMessage = new messagesModel({ name: data.name, message: data.message, date: new Date(), room: data.room });
         newMessage.save(function (err) {
             if (err) return handleError(err);
             console.log('saved')
