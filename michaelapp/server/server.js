@@ -151,12 +151,15 @@ app.use(cors());
 // });
 
 io.sockets.on('connection', function (socket) {
-    socket.on('subscribe', function (room,name) {
+    socket.on('subscribe', function (room) {
         console.log('joining room', room);
         socket.join(room);
-        socket.emit('message', name);
     })
 
+    socket.on('name', name => {
+        console.log('some name enterd the room', name)
+        socket.emit('name', name)
+    })
     socket.on('unsubscribe', function (room) {
         console.log('leaving room', room);
         socket.leave(room);
@@ -164,12 +167,12 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('send', function (data) {
         console.log('sending message', data);
-        
+
         // save message to db
-        let newMessage = new messagesModel({ name: data.name, message: data.message, date: new Date(), room:data.room });
+        let newMessage = new messagesModel({ name: data.name, message: data.message, date: new Date(), room: data.room });
         newMessage.save(function (err) {
             if (err) return handleError(err);
-            console.log('data')
+            console.log('saved')
         });
 
         io.sockets.in(data.room).emit('message', data);
@@ -190,7 +193,6 @@ app.post('/messages', (req, res) => {
         res.send({ "messages": docs })
     }).sort({ 'date': -1 }).limit(20)
 })
-
 
 
 

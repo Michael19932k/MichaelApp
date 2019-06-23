@@ -5,11 +5,14 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { defaultCipherList } from 'constants';
 import { BrowserRouter as Router, Link, Route } from "react-router-dom";
+import {useStateValue} from './upState';
 
 function LinkWindow(props) {
     const [tokenValue, settokenValue] = useState("");
     const [userName, setuserName] = useState("");
-    const [passToken, setpassToken] = useState("");
+    const [upstateUserName, dispatchupstateUserName] = useStateValue();
+    
+
 
     localStorage.setItem("name", { userName });
     console.log(localStorage.getItem("name"))
@@ -36,6 +39,7 @@ function LinkWindow(props) {
     )
     function fetchLink() {
         var createRoomId = "Id"
+        // console.log("not broken yet")
         fetch('http://localhost:3001/kaki', {
             method: 'POST',
             body: JSON.stringify({ createRoomId }),
@@ -64,7 +68,11 @@ function LinkWindow(props) {
                 console.log(response)
                 console.log(tokenValue)
                 if (response.success) {
-                    localStorage.setItem("name", `${userName}`)
+                    dispatchupstateUserName({
+                        type: 'passName',
+                        payload: {userName}  //payload
+                    })
+                    //  console.log(userName)
                     props.history.push(`/rooms/${tokenValue}`)
                 }
             })

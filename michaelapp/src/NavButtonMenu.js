@@ -18,8 +18,8 @@ function NavButtonMenu() {
         <div className="buttonWrapper">
             <div className="btn-group">
                 <Link to={"/LinkWindow"} className='buttonS'>FlashChat</Link>
-                <Link className="buttonS">Log In</Link>
-                <Link className="buttonS">Sign Up</Link>
+                <Link to={"/"} c className="buttonS">Log In</Link>
+                <Link to={"/"} c className="buttonS">Sign Up</Link>
             </div>
         </div>)
 }
