@@ -31,6 +31,7 @@
   grid-area: ChatArea;
   overflow-y: scroll;
   width: 60vw;
+ 
 }
 
 .ChatInputArea {

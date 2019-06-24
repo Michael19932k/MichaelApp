@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Link, Route } from "react-router-dom";
 import React, { useState, useEffect, useRef } from "react";
 import socketIOClient from "socket.io-client";
 import { animateScroll as scroll } from "react-scroll";
-import {useStateValue} from './upState';
+import { useStateValue } from './upState';
 
 const io = require("socket.io-client")
 const socket = socketIOClient('http://localhost:4000/');
@@ -18,7 +18,7 @@ let counter = 0;
 
 function ChatBox({ match }, e, props) {
     const [context,] = useStateValue();
-    const [serviceList, ] = useState(context.setName.userName)
+    const [serviceList,] = useState(context.setName.userName)
     let name = serviceList
     // ```````````````````````````````````````````````````````````
     const [newMsgs, setNewMsgs] = useState(0);
@@ -29,7 +29,7 @@ function ChatBox({ match }, e, props) {
 
 
     useEffect(() => {
-        fetch('http://localhost:4000/messages', {
+        fetch(`http://localhost:4000/messages/${room}`, {
             method: 'POST',
             body: JSON.stringify({ name }),
             headers: {
@@ -40,9 +40,9 @@ function ChatBox({ match }, e, props) {
                 let newOrder = response.messages.reverse();
                 setMessages(response.messages);
             })
-            .catch(error => console.error('Error:', error))    
+            .catch(error => console.error('Error:', error))
 
-        
+
         socket.on('message', function (data) {
             console.log(data);
             tempSocketMessages.push(data)
@@ -53,16 +53,18 @@ function ChatBox({ match }, e, props) {
 
         socket.emit('subscribe', room);
         socket.emit('name', name);
-        socket.on('name', name=>{
+        socket.on('name', name => {
             console.log('name was recived', name)
-           setNames([...names, name])
+            setNames([...names, name])
         })
-        
+
     }, []);
 
     useEffect(() => {
+        const chatHeight = containerRef.current.getBoundingClientRect().height;
+        containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        // scroll.scrollToBottom();
 
-        scroll.scrollToBottom()
     })
 
     return (
@@ -70,7 +72,7 @@ function ChatBox({ match }, e, props) {
             <div className="original-grid-container">
                 <div className="NickNamesArea">
                     {
-                        names.map((name, index)=>{
+                        names.map((name, index) => {
                             console.log(names)
                             return (
                                 <p key={index}>{name}</p>
@@ -84,27 +86,29 @@ function ChatBox({ match }, e, props) {
                         messages.map((message, index) => {
 
 
-                            return <div className="messageBubble" key={index}><div className="userName">{message.name}</div><div className="messageDate">{message.date.toString().slice(11, -8)}</div>{<br/>}{message.message}</div> 
+                            return <div className="messageBubble" key={index}><div className="userName">{message.name}</div><div className="messageDate">{message.date.toString().slice(11, -8)}</div>{<br />}{message.message}</div>
                         })
                     }
                     {
                         tempSocketMessages.map((data, index) => {
                             console.log(data)
-                            return <div className="messageBubble" key={index + 'socket'}><div className="userName">{data.name}</div><div className="messageDate">{data.date.toString().slice(11, -8)}</div>{<br/>}{data.message}</div>
+                            return <div className="messageBubble" key={index + 'socket'}><div className="userName">{data.name}</div><div className="messageDate">{data.date.toString().slice(11, -8)}</div>{<br />}{data.message}</div>
                         })
                     }
                 </div>
                 <div className="ChatInputArea">
                     <div className="messageInputWrapper">
-                        <textarea className="messageTypingSpot" type="text" required autoFocus={true} onKeyUp={(e) => {
-                            if (e.key === 'Enter') {                               
-                                console.dir(name)
-                                socket.emit('send', { room, message: e.target.value, date:new Date(), name});
-                              
+                        <textarea className="messageTypingSpot" type="text" autoFocus={true} onKeyUp={(e) => {
+                            if (e.key === 'Enter') {
+
+                                if (e.target.value.length > 1) {
+                                    socket.emit('send', { room, message: e.target.value, date: new Date(), name });
+                                }
                                 e.target.value = '';
+
                             }
                         }} ></textarea>
-                     
+
                     </div></div>
 
             </div>

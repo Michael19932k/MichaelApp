@@ -184,9 +184,10 @@ http.listen(4000, function () {
 });
 
 
-app.post('/messages', (req, res) => {
+app.post('/messages/:room', (req, res) => {
     let name = req.body.name
-    messagesModel.find({}, (err, docs) => {
+    const room = req.params.room;
+    messagesModel.find({room:room}, (err, docs) => {
 
         if (err) throw err;
 
