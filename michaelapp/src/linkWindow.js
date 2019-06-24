@@ -57,7 +57,7 @@ function LinkWindow(props) {
     }
     function nameToken(e) {
         e.preventDefault()
-        fetch('http://localhost:3001/pipi', {
+        fetch('http://localhost:3001/generateRoomId', {
             method: 'POST',
             body: JSON.stringify({ userName, tokenValue }),
             headers: {

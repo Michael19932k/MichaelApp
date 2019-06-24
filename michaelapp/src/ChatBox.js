@@ -12,8 +12,9 @@ import { useStateValue } from './upState';
 const io = require("socket.io-client")
 const socket = socketIOClient('http://localhost:4000/');
 let tempSocketMessages = [];
-let tempSocketNames = [];
+
 let counter = 0;
+let namesTemp = [];
 
 
 function ChatBox({ match }, e, props) {
@@ -29,6 +30,7 @@ function ChatBox({ match }, e, props) {
 
 
     useEffect(() => {
+      
         fetch(`http://localhost:4000/messages/${room}`, {
             method: 'POST',
             body: JSON.stringify({ name }),
@@ -51,19 +53,26 @@ function ChatBox({ match }, e, props) {
             console.log(newMsgs)
         });
 
-        socket.emit('subscribe', room);
-        socket.emit('name', name);
-        socket.on('name', name => {
-            console.log('name was recived', name)
-            setNames([...names, name])
+        socket.on('name', name1 => {
+            console.log('name was recived', name1);
+            console.log(names)
+            namesTemp.push(name1);
+            console.log(namesTemp);
+            setNames(counter + 1);
+            counter++;
+            console.log(names)
         })
+
+        socket.emit('subscribe', room);
+        socket.emit('name', { name, room });
+
 
     }, []);
 
     useEffect(() => {
         const chatHeight = containerRef.current.getBoundingClientRect().height;
         containerRef.current.scrollTop = containerRef.current.scrollHeight;
-        // scroll.scrollToBottom();
+      
 
     })
 
@@ -72,10 +81,9 @@ function ChatBox({ match }, e, props) {
             <div className="original-grid-container">
                 <div className="NickNamesArea">
                     {
-                        names.map((name, index) => {
-                            console.log(names)
+                        namesTemp.map((name2, index) => {
                             return (
-                                <p key={index}>{name}</p>
+                                <p key={index}>{name2}</p>
                             )
                         })
                     }
@@ -102,7 +110,7 @@ function ChatBox({ match }, e, props) {
                             if (e.key === 'Enter') {
 
                                 if (e.target.value.length > 1) {
-                                    socket.emit('send', { room, message: e.target.value, date: new Date(), name });
+                                    socket.emit('sendMessage', { room, message: e.target.value, date: new Date(), name });
                                 }
                                 e.target.value = '';
 

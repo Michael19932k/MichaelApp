@@ -28,7 +28,7 @@ app.post('/kaki', function (req, res) {
     });
 
 });
-app.post('/pipi', function (req, res) {
+app.post('/generateRoomId', function (req, res) {
     var rooms = mongoose.model('rooms', roomsSchema);
     rooms.findOne({ _id: req.body.passToken }, function (err, result) {
         if (result !== undefined) {
@@ -112,7 +112,7 @@ const messagesSchema = new Schema({
     name: String,
     message: String,
     date: Date,
-    room:String
+    room: String
 });
 
 
@@ -152,21 +152,29 @@ app.use(cors());
 
 io.sockets.on('connection', function (socket) {
     socket.on('subscribe', function (room) {
+        // socket.emit('name', name)
         console.log('joining room', room);
         socket.join(room);
+
     })
 
-    socket.on('name', name => {
-        console.log('some name enterd the room', name)
-        socket.emit('name', name)
-    })
+    socket.on('name', nameObj => {
+
+        try {
+            console.log('some name enterd the room', nameObj.name)
+            io.sockets.in(nameObj.room).emit('name', nameObj.name)
+        } catch {
+
+        }
+    });
+
     socket.on('unsubscribe', function (room) {
         console.log('leaving room', room);
         socket.leave(room);
     })
 
-    socket.on('send', function (data) {
-        console.log('sending message', data);
+    socket.on('sendMessage', function (data) {
+        // console.log('sending message', data);
 
         // save message to db
         let newMessage = new messagesModel({ name: data.name, message: data.message, date: new Date(), room: data.room });
@@ -187,7 +195,7 @@ http.listen(4000, function () {
 app.post('/messages/:room', (req, res) => {
     let name = req.body.name
     const room = req.params.room;
-    messagesModel.find({room:room}, (err, docs) => {
+    messagesModel.find({ room: room }, (err, docs) => {
 
         if (err) throw err;
 
