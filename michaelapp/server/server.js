@@ -1,5 +1,6 @@
 const uid = require('./uid')
-const express = require('express')
+const express = require('express');
+const _ = require('lodash');
 const port = process.env.PORT || 3001;
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -150,28 +151,33 @@ app.use(cors());
 //     });
 // });
 
+let roomsNamesObj = {};
+
 io.sockets.on('connection', function (socket) {
     socket.on('subscribe', function (room) {
         console.log('joining room', room);
         socket.join(room);
-        app.post("/userinroom/", (req, res) => {
-            let nameInTheRroom = req.body.name1
-            roomsModel.findOneAndUpdate({_id: room},{$upsert:{ userInRoom: nameInTheRroom}}, function (error, success) {
-                if (error) {
-                    console.log(error);
-                } else {
-                    console.log(success);
-                }
-            });
-        });
+        
 
     })
 
     socket.on('name', nameObj => {
+        console.log(nameObj.name,nameObj.room )
+        if(roomsNamesObj.hasOwnProperty(nameObj.room)){
+            roomsNamesObj[nameObj.room].push(nameObj.name)
+        } else {
+            roomsNamesObj[nameObj.room] = [];
+            roomsNamesObj[nameObj.room].push(nameObj.name)
+        }
+
+        
+        console.dir(roomsNamesObj)
+       
+        
 
         try {
             console.log('some name enterd the room', nameObj.name)
-            io.in(nameObj.room).emit('name', nameObj.name)
+            io.in(nameObj.room).emit('name', roomsNamesObj[nameObj.room])
         } catch {
 
         }
@@ -181,6 +187,7 @@ io.sockets.on('connection', function (socket) {
         console.log('leaving room', room);
         socket.leave(room);
     })
+
 
     socket.on('sendMessage', function (data) {
         // console.log('sending message', data);
@@ -192,7 +199,7 @@ io.sockets.on('connection', function (socket) {
             console.log('saved')
         });
 
-        socket.to(data.room).emit('message', data);
+        io.in(data.room).emit('message', data);
     });
 });
 

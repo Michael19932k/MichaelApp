@@ -53,27 +53,17 @@ function ChatBox({ match }, e, props) {
             console.log(newMsgs)
         });
 
-        socket.on('name', name1 => {
-            console.log('name was recived', name1);
-            console.log(names)
-            fetch("http://localhost:4000/userinroom/", {
-                method: 'POST',
-                body: JSON.stringify({ name1 }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(res => res.json())
-                .then(response => {
-                    let newOrder = response.messages.reverse();
-                    setMessages(response.messages);
-                })
-                .catch(error => console.error('Error:', error))
-
-            namesTemp.push(name1);
-            console.log(namesTemp);
-            setNames(counter + 1);
-            counter++;
-            console.log(names)
+        socket.on('name', namesArray => {
+           
+            console.dir(namesArray);
+            if(namesArray){
+                namesTemp = namesArray;
+                console.log(namesTemp);
+                setNames(counter + 1);
+                counter++;
+            }          
+            
+            
         })
 
         socket.emit('subscribe', room);
