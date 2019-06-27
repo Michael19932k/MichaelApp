@@ -30,7 +30,7 @@ function ChatBox({ match }, e, props) {
 
 
     useEffect(() => {
-      
+
         fetch(`http://localhost:4000/messages/${room}`, {
             method: 'POST',
             body: JSON.stringify({ name }),
@@ -56,6 +56,19 @@ function ChatBox({ match }, e, props) {
         socket.on('name', name1 => {
             console.log('name was recived', name1);
             console.log(names)
+            fetch("http://localhost:4000/userinroom/", {
+                method: 'POST',
+                body: JSON.stringify({ name1 }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => res.json())
+                .then(response => {
+                    let newOrder = response.messages.reverse();
+                    setMessages(response.messages);
+                })
+                .catch(error => console.error('Error:', error))
+
             namesTemp.push(name1);
             console.log(namesTemp);
             setNames(counter + 1);
@@ -72,7 +85,7 @@ function ChatBox({ match }, e, props) {
     useEffect(() => {
         const chatHeight = containerRef.current.getBoundingClientRect().height;
         containerRef.current.scrollTop = containerRef.current.scrollHeight;
-      
+
 
     })
 

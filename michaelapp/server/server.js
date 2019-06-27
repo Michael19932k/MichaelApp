@@ -71,7 +71,7 @@ db.once('open', () => {
 //Define a schema
 const Schema = mongoose.Schema;
 const roomsSchema = new Schema({
-    stuff: String
+    userInRoom: Array
 });
 
 
@@ -79,7 +79,7 @@ const roomsSchema = new Schema({
 const roomsModel = mongoose.model('rooms', roomsSchema);
 
 // Create an instance of model SomeModel
-var rooms_instance = new roomsModel({ stuff: '' });
+var rooms_instance = new roomsModel({ userInRoom: '' });
 
 // Save the new model instance, passing a callback
 // rooms_instance.save(function (err) {
@@ -152,9 +152,18 @@ app.use(cors());
 
 io.sockets.on('connection', function (socket) {
     socket.on('subscribe', function (room) {
-        // socket.emit('name', name)
         console.log('joining room', room);
         socket.join(room);
+        app.post("/userinroom/", (req, res) => {
+            let nameInTheRroom = req.body.name1
+            roomsModel.findOneAndUpdate({_id: room},{$upsert:{ userInRoom: nameInTheRroom}}, function (error, success) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log(success);
+                }
+            });
+        });
 
     })
 
@@ -162,7 +171,7 @@ io.sockets.on('connection', function (socket) {
 
         try {
             console.log('some name enterd the room', nameObj.name)
-            io.sockets.in(nameObj.room).emit('name', nameObj.name)
+            io.in(nameObj.room).emit('name', nameObj.name)
         } catch {
 
         }
@@ -183,7 +192,7 @@ io.sockets.on('connection', function (socket) {
             console.log('saved')
         });
 
-        io.sockets.in(data.room).emit('message', data);
+        socket.to(data.room).emit('message', data);
     });
 });
 
