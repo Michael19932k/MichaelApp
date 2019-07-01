@@ -46,30 +46,42 @@ function ChatBox({ match }, e, props) {
 
 
         socket.on('message', function (data) {
-            console.log(data);
+            // console.log(data);
             tempSocketMessages.push(data)
             setNewMsgs(counter + 1);
             counter++;
-            console.log(newMsgs)
+            // console.log(newMsgs)
         });
 
         socket.on('name', namesArray => {
-           
-            console.dir(namesArray);
+            console.log(namesArray);
             if(namesArray){
                 namesTemp = namesArray;
-                console.log(namesTemp);
+                // console.log(namesTemp);
                 setNames(counter + 1);
                 counter++;
             }          
-            
-            
+        })
+        socket.on('updateusers', filteredItems => {
+            if(filteredItems){
+            let x = filteredItems
+            namesTemp = x;
+            if(filteredItems){
+                // namesTemp = namesArray;
+                // console.log(namesTemp);
+                setNames(counter + 1);
+                counter++;
+            }          
+            }
         })
 
+        
         socket.emit('subscribe', room);
         socket.emit('name', { name, room });
 
-
+        // socket.emit('disconnect', name);
+            
+    
     }, []);
 
     useEffect(() => {

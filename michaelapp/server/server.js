@@ -24,7 +24,7 @@ app.post('/kaki', function (req, res) {
     insertOne.save(function (err, insertOne) {
         var roomId = insertOne.id
         res.send({ roomId })
-        console.log(roomId)
+        // console.log(roomId)
         if (err) return console.error(err);
     });
 
@@ -34,7 +34,7 @@ app.post('/generateRoomId', function (req, res) {
     rooms.findOne({ _id: req.body.passToken }, function (err, result) {
         if (result !== undefined) {
             usersModel.findOne({ name: req.body.userName }, function (err, results) {
-                console.log(results)
+                // console.log(results)
                 if (results !== null) {
                     res.send({ error: "userTaken" })
                 } else {
@@ -124,7 +124,7 @@ const messagesModel = mongoose.model('messages', messagesSchema);
 var messages_instance = new messagesModel({ name: 'awesome', message: "bla", date: new Date() });
 
 
-let name;
+let name
 
 app.use(cors());
 
@@ -157,36 +157,50 @@ io.sockets.on('connection', function (socket) {
     socket.on('subscribe', function (room) {
         console.log('joining room', room);
         socket.join(room);
-        
+
 
     })
 
     socket.on('name', nameObj => {
-        console.log(nameObj.name,nameObj.room )
-        if(roomsNamesObj.hasOwnProperty(nameObj.room)){
+        console.log(nameObj.name, nameObj.room)
+        socket.username = nameObj.name;
+        if (roomsNamesObj.hasOwnProperty(nameObj.room)) {
             roomsNamesObj[nameObj.room].push(nameObj.name)
         } else {
             roomsNamesObj[nameObj.room] = [];
             roomsNamesObj[nameObj.room].push(nameObj.name)
         }
 
-        
+
         console.dir(roomsNamesObj)
-       
-        
+        // console.dir(roomsNamesObj[nameObj.room])
+
+
 
         try {
-            console.log('some name enterd the room', nameObj.name)
+            // console.log('some name enterd the room', nameObj.name)
             io.in(nameObj.room).emit('name', roomsNamesObj[nameObj.room])
         } catch {
 
         }
     });
 
-    socket.on('unsubscribe', function (room) {
-        console.log('leaving room', room);
-        socket.leave(room);
-    })
+    socket.on('disconnect', function (roomsNamesObj) {
+        console.log('user disconnected');
+        var connectionMessage = socket.username + " Disconnected from Socket " + socket.id;
+        console.log(connectionMessage);
+        let x = Object.values(roomsNamesObj)[Object.values(roomsNamesObj).length - 1]
+        let y = socket.username
+        console.log(x)
+        console.log(y)
+        if (x && y) {
+        const filteredItems = x.filter(item => !y.includes(item))
+        console.log(filteredItems)
+        io.sockets.emit('updateusers', filteredItems);
+        }
+    });
+
+
 
 
     socket.on('sendMessage', function (data) {
@@ -210,8 +224,8 @@ http.listen(4000, function () {
 
 app.post('/messages/:room', (req, res) => {
     let name = req.body.name
-    const room = req.params.room;
-    messagesModel.find({ room: room }, (err, docs) => {
+    const roomZ = req.params.room;
+    messagesModel.find({ room: roomZ }, (err, docs) => {
 
         if (err) throw err;
 
