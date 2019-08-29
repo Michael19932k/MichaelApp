@@ -54,7 +54,7 @@ function ChatBox({ match }, e, props) {
         });
 
         socket.on('name', namesArray => {
-            console.log(namesArray);
+            // console.log(namesArray);
             if(namesArray){
                 namesTemp = namesArray;
                 // console.log(namesTemp);
@@ -65,10 +65,9 @@ function ChatBox({ match }, e, props) {
         socket.on('updateusers', filteredItems => {
             if(filteredItems){
             let x = filteredItems
+            console.log(x)
             namesTemp = x;
             if(filteredItems){
-                // namesTemp = namesArray;
-                // console.log(namesTemp);
                 setNames(counter + 1);
                 counter++;
             }          
@@ -78,9 +77,7 @@ function ChatBox({ match }, e, props) {
         
         socket.emit('subscribe', room);
         socket.emit('name', { name, room });
-
-        // socket.emit('disconnect', name);
-            
+  
     
     }, []);
 
@@ -114,7 +111,7 @@ function ChatBox({ match }, e, props) {
                     }
                     {
                         tempSocketMessages.map((data, index) => {
-                            console.log(data)
+                            // console.log(data)
                             return <div className="messageBubble" key={index + 'socket'}><div className="userName">{data.name}</div><div className="messageDate">{data.date.toString().slice(11, -8)}</div>{<br />}{data.message}</div>
                         })
                     }

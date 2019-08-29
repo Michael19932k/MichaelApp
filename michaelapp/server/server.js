@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({
 
 // ````fetchs from LinkWindow````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
 
-app.post('/kaki', function (req, res) {
+app.post('/createRoomId', function (req, res) {
     let insertOne = new roomsModel({
         name: '',
         messages: ""
@@ -128,41 +128,19 @@ let name
 
 app.use(cors());
 
-// io.on('connection', function (socket) {
-//     console.log('a user connected');
-
-
-//     socket.on('chat message', function (msg, name) {
-
-
-//         //save message to db
-//         let newMessage = new messagesModel({ name: name, message: msg, date: new Date() });
-//         newMessage.save(function (err) {
-//             if (err) return handleError(err);
-//             console.log('saved')
-//         });
-
-//         console.log('message: ' + msg);
-//         io.emit('chat message', { name: "name", message: msg, date: new Date() });
-//     });
-
-//     socket.on('disconnect', function () {
-//         console.log('user disconnected');
-//     });
-// });
-
 let roomsNamesObj = {};
+let userRoomObj = {}
 
 io.sockets.on('connection', function (socket) {
     socket.on('subscribe', function (room) {
         console.log('joining room', room);
         socket.join(room);
+        userRoomObj[socket.id] = room
 
 
     })
 
     socket.on('name', nameObj => {
-        console.log(nameObj.name, nameObj.room)
         socket.username = nameObj.name;
         if (roomsNamesObj.hasOwnProperty(nameObj.room)) {
             roomsNamesObj[nameObj.room].push(nameObj.name)
@@ -171,33 +149,33 @@ io.sockets.on('connection', function (socket) {
             roomsNamesObj[nameObj.room].push(nameObj.name)
         }
 
-
         console.dir(roomsNamesObj)
-        // console.dir(roomsNamesObj[nameObj.room])
-
-
-
+       
         try {
-            // console.log('some name enterd the room', nameObj.name)
             io.in(nameObj.room).emit('name', roomsNamesObj[nameObj.room])
-        } catch {
-
+        } catch(err) {
+        console.error(err)
         }
     });
 
-    socket.on('disconnect', function (roomsNamesObj) {
+    socket.on('disconnect', function () {
         console.log('user disconnected');
+        console.log(roomsNamesObj);
+        
         var connectionMessage = socket.username + " Disconnected from Socket " + socket.id;
-        console.log(connectionMessage);
-        let x = Object.values(roomsNamesObj)[Object.values(roomsNamesObj).length - 1]
+       
         let y = socket.username
-        console.log(x)
-        console.log(y)
-        if (x && y) {
-        const filteredItems = x.filter(item => !y.includes(item))
-        console.log(filteredItems)
-        io.sockets.emit('updateusers', filteredItems);
+       
+        try {
+            let roomOfUser = userRoomObj[socket.id];
+            let indexOfUser = roomsNamesObj[roomOfUser].indexOf(socket.username);
+            roomsNamesObj[roomOfUser].splice(indexOfUser, 1);
+            console.log(roomsNamesObj)
+            io.in(roomOfUser).emit('updateusers', roomsNamesObj[roomOfUser])
+        } catch {
+
         }
+        
     });
 
 

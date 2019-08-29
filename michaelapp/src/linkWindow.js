@@ -40,7 +40,7 @@ function LinkWindow(props) {
     function fetchLink() {
         var createRoomId = "Id"
         // console.log("not broken yet")
-        fetch('http://localhost:3001/kaki', {
+        fetch('http://localhost:3001/createRoomId', {
             method: 'POST',
             body: JSON.stringify({ createRoomId }),
             headers: {
