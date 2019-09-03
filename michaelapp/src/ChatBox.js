@@ -10,7 +10,7 @@ import { animateScroll as scroll } from "react-scroll";
 import { useStateValue } from './upState';
 
 const io = require("socket.io-client")
-const socket = socketIOClient('http://localhost:4000/');
+const socket = socketIOClient();
 let tempSocketMessages = [];
 
 let counter = 0;
@@ -31,7 +31,7 @@ function ChatBox({ match }, e, props) {
 
     useEffect(() => {
 
-        fetch(`http://localhost:4000/messages/${room}`, {
+        fetch(`/messages/${room}`, {
             method: 'POST',
             body: JSON.stringify({ name }),
             headers: {

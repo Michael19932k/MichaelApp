@@ -40,7 +40,7 @@ function LinkWindow(props) {
     function fetchLink() {
         var createRoomId = "Id"
         // console.log("not broken yet")
-        fetch('http://localhost:3001/createRoomId', {
+        fetch('/createRoomId', {
             method: 'POST',
             body: JSON.stringify({ createRoomId }),
             headers: {
@@ -57,7 +57,7 @@ function LinkWindow(props) {
     }
     function nameToken(e) {
         e.preventDefault()
-        fetch('http://localhost:3001/generateRoomId', {
+        fetch('/generateRoomId', {
             method: 'POST',
             body: JSON.stringify({ userName, tokenValue }),
             headers: {

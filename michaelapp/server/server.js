@@ -61,7 +61,7 @@ app.post('/generateRoomId', function (req, res) {
 
 // ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
 //connect mongoDB
-const url = "mongodb://localhost:27017/newDb";
+const url = "mongodb+srv://pucika2k:199313002k@cluster0-71gkv.mongodb.net/test?retryWrites=true&w=majority";
 mongoose.connect(url, { useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -83,10 +83,10 @@ const roomsModel = mongoose.model('rooms', roomsSchema);
 var rooms_instance = new roomsModel({ userInRoom: '' });
 
 // Save the new model instance, passing a callback
-// rooms_instance.save(function (err) {
-//     if (err) return handleError(err);
-//     console.log('saved')
-// });
+rooms_instance.save(function (err) {
+    if (err) return handleError(err);
+    console.log('saved')
+});
 // Define a schema
 // const Schema = mongoose.Schema;
 const usersSchenma = new Schema({
@@ -103,10 +103,10 @@ const usersModel = mongoose.model('Users', usersSchenma);
 var users_instance = new usersModel({ name: '', rooms: "" });
 
 // Save the new model instance, passing a callback
-// users_instance.save(function (err) {
-//     if (err) return handleError(err);
-//     console.log('saved')
-// });
+users_instance.save(function (err) {
+    if (err) return handleError(err);
+    console.log('saved')
+});
 //Define a schema
 // const Schema = mongoose.Schema;
 const messagesSchema = new Schema({
