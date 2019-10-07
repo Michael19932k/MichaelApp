@@ -5,26 +5,32 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { defaultCipherList } from 'constants';
 import { BrowserRouter as Router, Link, Route } from "react-router-dom";
-import {useStateValue} from './upState';
+import { useStateValue } from './upState';
+import InfoIcon from './InfoIcon'
+
 
 function LinkWindow(props) {
     const [tokenValue, settokenValue] = useState("");
     const [userName, setuserName] = useState("");
     const [upstateUserName, dispatchupstateUserName] = useStateValue();
-    
 
 
-    localStorage.setItem("name", { userName });
-    console.log(localStorage.getItem("name"))
+
+    sessionStorage.setItem("name",  userName );
 
     return (
         <div className="LinkWindow">
+            
             <div className="minorLinkWindowWrapper">
+                
                 <form onSubmit={nameToken}>
-                    <div><input type="text" required value={userName} onChange={e => setuserName(e.target.value)}>
-                    </input> &larr;Type your nick name</div>
-                    <div><input type="text" value={tokenValue} onChange={e => settokenValue(e.target.value)}>
-                    </input> &larr;Please enter your token here</div>
+                    
+                    <div>Type your nick name</div><div className="InfoIconWrapper"><InfoIcon/></div>
+                    <input type="text" required value={userName} onChange={e => setuserName(e.target.value)}>
+                    </input>
+                    <div>Please enter your token here</div>
+                    <input type="text" value={tokenValue} onChange={e => settokenValue(e.target.value)}>
+                    </input>
                     <input onClick={fetchLink} type="button" value="Generate"></input>
                     <input type="submit" value="Submit"></input></form>
                 <Link to={"/"} className='getToMain'>Get Back</Link>
@@ -34,13 +40,14 @@ function LinkWindow(props) {
 
 
             </div>
+            
         </div>
 
     )
     function fetchLink() {
         var createRoomId = "Id"
         // console.log("not broken yet")
-        fetch('/createRoomId', {
+        fetch('http://localhost:3001/createRoomId', {
             method: 'POST',
             body: JSON.stringify({ createRoomId }),
             headers: {
@@ -57,7 +64,7 @@ function LinkWindow(props) {
     }
     function nameToken(e) {
         e.preventDefault()
-        fetch('/generateRoomId', {
+        fetch('http://localhost:3001/generateRoomId', {
             method: 'POST',
             body: JSON.stringify({ userName, tokenValue }),
             headers: {
@@ -70,7 +77,7 @@ function LinkWindow(props) {
                 if (response.success) {
                     dispatchupstateUserName({
                         type: 'passName',
-                        payload: {userName}  //payload
+                        payload: { userName }  //payload
                     })
                     //  console.log(userName)
                     props.history.push(`/rooms/${tokenValue}`)

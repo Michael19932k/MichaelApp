@@ -5,12 +5,11 @@ import * as serviceWorker from './serviceWorker';
 import { defaultCipherList } from 'constants';
 import { BrowserRouter as Router, Link, Route } from "react-router-dom";
 import React, { useState, useEffect, useRef } from "react";
-import socketIOClient from "socket.io-client";
-import { animateScroll as scroll } from "react-scroll";
+import io from 'socket.io-client'
+import { animateScroll as scroll } from "react-scroll"
 import { useStateValue } from './upState';
 
-const io = require("socket.io-client")
-const socket = socketIOClient();
+var socket = io('localhost:4000', { transports: ['websocket'], upgrade: false });
 let tempSocketMessages = [];
 
 let counter = 0;
@@ -19,19 +18,29 @@ let namesTemp = [];
 
 function ChatBox({ match }, e, props) {
     const [context,] = useStateValue();
-    const [serviceList,] = useState(context.setName.userName)
-    let name = serviceList
+    const [name, setName] = useState(sessionStorage.getItem('name'))
+    // context.setName.userName
+
+    // const [name, setName] = useState(serviceList);
     // ```````````````````````````````````````````````````````````
     const [newMsgs, setNewMsgs] = useState(0);
     const [messages, setMessages] = useState([]);
     const [names, setNames] = useState([]);
+
     const containerRef = useRef(null);
     let room = match.params.id
 
-
     useEffect(() => {
 
-        fetch(`/messages/${room}`, {
+        // if (name === undefined || null) {
+        //     let storageName = localStorage.getItem('name')
+        //     setName(storageName)
+        // } 
+
+        console.log('check name', name)
+
+
+        fetch(`http://localhost:3001/messages/${room}`, {
             method: 'POST',
             body: JSON.stringify({ name }),
             headers: {
@@ -55,43 +64,42 @@ function ChatBox({ match }, e, props) {
 
         socket.on('name', namesArray => {
             // console.log(namesArray);
-            if(namesArray){
+            if (namesArray) {
                 namesTemp = namesArray;
                 // console.log(namesTemp);
                 setNames(counter + 1);
                 counter++;
-            }          
+            }
         })
         socket.on('updateusers', filteredItems => {
-            if(filteredItems){
-            let x = filteredItems
-            console.log(x)
-            namesTemp = x;
-            if(filteredItems){
-                setNames(counter + 1);
-                counter++;
-            }          
+            if (filteredItems) {
+                let x = filteredItems
+                console.log(x)
+                namesTemp = x;
+                if (filteredItems) {
+                    setNames(counter + 1);
+                    counter++;
+                }
             }
         })
 
-        
+
         socket.emit('subscribe', room);
         socket.emit('name', { name, room });
-  
-    
+
     }, []);
 
     useEffect(() => {
         const chatHeight = containerRef.current.getBoundingClientRect().height;
         containerRef.current.scrollTop = containerRef.current.scrollHeight;
-
-
     })
+
 
     return (
         <div className="gridWrapper">
             <div className="original-grid-container">
                 <div className="NickNamesArea">
+                    Chat mates:
                     {
                         namesTemp.map((name2, index) => {
                             return (
@@ -118,7 +126,7 @@ function ChatBox({ match }, e, props) {
                 </div>
                 <div className="ChatInputArea">
                     <div className="messageInputWrapper">
-                        <textarea className="messageTypingSpot" type="text" autoFocus={true} onKeyUp={(e) => {
+                        <textarea className="messageTypingSpot" placeholder="Press to type..." type="text" autoFocus={true} onKeyUp={(e) => {
                             if (e.key === 'Enter') {
 
                                 if (e.target.value.length > 1) {
@@ -143,7 +151,6 @@ function ChatBox({ match }, e, props) {
 
     )
 }
-
 
 
 

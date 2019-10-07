@@ -1,5 +1,4 @@
 const uid = require('./uid')
-const express = require('express');
 const _ = require('lodash');
 const port = process.env.PORT || 3001;
 const bodyParser = require('body-parser');
@@ -13,6 +12,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
+http.listen(4000, function () {
+    console.log('listening on *:4000');
+});
+
 
 // ````fetchs from LinkWindow````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
 
@@ -72,7 +76,12 @@ db.once('open', () => {
 //Define a schema
 const Schema = mongoose.Schema;
 const roomsSchema = new Schema({
-    userInRoom: Array
+    userInRoom: Array,
+    expireAt: {
+        type: Date,
+        default: Date.now,
+        index: { expires: '1d' },
+      }
 });
 
 
@@ -92,7 +101,12 @@ rooms_instance.save(function (err) {
 const usersSchenma = new Schema({
     name: String,
     uid: String,
-    rooms: Array
+    rooms: Array,
+    expireAt: {
+        type: Date,
+        default: Date.now,
+        index: { expires: '1d' },
+      }
 });
 
 
@@ -113,7 +127,12 @@ const messagesSchema = new Schema({
     name: String,
     message: String,
     date: Date,
-    room: String
+    room: String,
+    expireAt: {
+        type: Date,
+        default: Date.now,
+        index: { expires: '1d' },
+      }
 });
 
 
@@ -132,6 +151,7 @@ let roomsNamesObj = {};
 let userRoomObj = {}
 
 io.sockets.on('connection', function (socket) {
+    socket.removeAllListeners()
     socket.on('subscribe', function (room) {
         console.log('joining room', room);
         socket.join(room);
@@ -161,7 +181,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('disconnect', function () {
         console.log('user disconnected');
         console.log(roomsNamesObj);
-        
+        socket.leave(userRoomObj)
         var connectionMessage = socket.username + " Disconnected from Socket " + socket.id;
        
         let y = socket.username
@@ -191,17 +211,15 @@ io.sockets.on('connection', function (socket) {
             console.log('saved')
         });
 
-        io.in(data.room).emit('message', data);
+        io.to(data.room).emit('message', data);
     });
 });
 
-http.listen(4000, function () {
-    console.log('listening on *:4000');
-});
+
 
 
 app.post('/messages/:room', (req, res) => {
-    let name = req.body.name
+    // let name = req.body.name
     const roomZ = req.params.room;
     messagesModel.find({ room: roomZ }, (err, docs) => {
 

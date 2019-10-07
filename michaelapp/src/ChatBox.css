@@ -25,13 +25,15 @@
 .NickNamesArea {
   grid-area: NickNamesArea;
   border-right: solid orange 4px;
+  width: 15vw;
+  overflow-wrap: break-word;
+  color: #B2B2B2;
 }
 
 .ChatArea {
   grid-area: ChatArea;
   overflow-y: scroll;
   width: 60vw;
- 
 }
 
 .ChatInputArea {
@@ -97,17 +99,46 @@
   -webkit-transform: rotate( 29deg) skew( -35deg);
   width: 20px;
 }
-.messageDate{
+
+.messageDate {
   background-color: rgba(70, 66, 61, 0.144);
   font-size: 10px;
   color: #B2B2B2;
   width: fit-content;
   display: inline;
 }
-.userName{
+
+.userName {
   margin-right: 0.5vw;
   font-size: 16px;
   color: white;
   width: fit-content;
   display: inline;
+}
+
+@media screen and (max-width: 600px) {
+  .NickNamesArea {
+    /* display: none; */
+    width: 100%;
+    /* height: fit-content; */
+    border-bottom: solid orange 4px;
+  }
+  .ChatInputArea {
+    width: 100%
+  }
+  .ChatArea {
+    width: 100%;
+  }
+  .original-grid-container {
+    padding: 25 px;
+    border: solid orange 4px;
+    background-color: rgba(70, 66, 61, 0.144);
+    height: 95vh;
+    width: 95vw;
+    margin: auto;
+    display: grid;
+    grid-template-columns:100%;
+    grid-template-rows: 10% 80% 10%;
+    grid-template-areas: "NickNamesArea" "ChatArea" "ChatInputArea";
+  }
 }

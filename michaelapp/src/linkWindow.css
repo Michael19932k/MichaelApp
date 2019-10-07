@@ -10,6 +10,7 @@
 }
 
 .minorLinkWindowWrapper{
+  position: absolute;
   padding: 25 px;
   border: solid orange 4px;
   background-color: rgba(70, 66, 61, 0.144);
@@ -29,3 +30,17 @@
 .getToMain:hover{
   color: orange;
 }
+.InfoIconWrapper{
+  position: relative;
+  left: 2vw;
+}
+@media screen and (max-width: 600px) {
+  .minorLinkWindowWrapper{
+    height: fit-content;
+    width: fit-content;
+  }
+  .InfoIconWrapper{
+    /* left: 4vw; */
+  }
+}
+

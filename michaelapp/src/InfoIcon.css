@@ -1,0 +1,113 @@
+.infoWrapper {
+    position: relative;
+
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: nowrap;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-justify-content: flex-end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    -webkit-align-content: stretch;
+    -ms-flex-line-pack: stretch;
+    align-content: stretch;
+    -webkit-align-items: flex-end;
+    -ms-flex-align: end;
+    align-items: flex-end;
+    height: 1px;
+}
+
+.bubble {
+    bottom: 4vh;
+    width: 300px;
+    height: 250px;
+    border: 4px solid #000000;
+    padding: 30px;
+    text-align: right;
+    color: #00bfb6;
+    background: #BAB8B8;
+    font-family: arial;
+    position: absolute;
+    -webkit-order: 0;
+    -ms-flex-order: 0;
+    order: 0;
+    -webkit-flex: 0 1 auto;
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto;
+    -webkit-align-self: auto;
+    -ms-flex-item-align: auto;
+    align-self: auto;
+    z-index: 2;
+}
+
+.bubble:after {
+    content: "";
+    width: 0px;
+    height: 0px;
+    position: absolute;
+    border-left: 10px solid transparent;
+    border-right: 10px solid #BAB8B8;
+    border-top: 10px solid #BAB8B8;
+    border-bottom: 10px solid transparent;
+    right: 24px;
+    bottom: -13px;
+}
+
+.bubble:before {
+    content: "";
+    width: 0px;
+    height: 0px;
+    position: absolute;
+    border-left: 10px solid transparent;
+    border-right: 10px solid #000000;
+    border-top: 10px solid #000000;
+    border-bottom: 10px solid transparent;
+    right: 20px;
+    bottom: -23px;
+}
+
+.info {
+    font-size: 30px;
+    -webkit-align-self: auto;
+    -ms-flex-item-align: auto;
+    align-self: flex-end;
+    margin-right: 10px;
+    margin-top: 10px;
+    height: fit-content;
+    cursor: pointer;
+}
+
+.infoContentWrapper {
+    color: rgb(0, 0, 0);
+    /* height: 300px; */
+    padding: 0px 5px;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    display: flex;
+    overflow-wrap: break-word;
+}
+
+.infoText {
+    text-align: left;
+    color: rgb(0, 0, 0);
+    line-height: 20px;
+    /* height: 120px; */
+    padding: 5px 5px 5px 5px;
+    overflow-wrap: break-word;
+    width: 320px;
+    /* height: 300px; */
+}
+
+.CloseButton {
+    text-align: right;
+    font-size: 25px;
+    height: fit-content;
+    padding: 5px;
+    cursor: pointer;
+}
