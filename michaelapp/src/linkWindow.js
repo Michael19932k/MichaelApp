@@ -46,7 +46,6 @@ function LinkWindow(props) {
     )
     function fetchLink() {
         var createRoomId = "Id"
-        // console.log("not broken yet")
         fetch('http://localhost:3001/createRoomId', {
             method: 'POST',
             body: JSON.stringify({ createRoomId }),
@@ -79,7 +78,6 @@ function LinkWindow(props) {
                         type: 'passName',
                         payload: { userName }  //payload
                     })
-                    //  console.log(userName)
                     props.history.push(`/rooms/${tokenValue}`)
                 }
             })

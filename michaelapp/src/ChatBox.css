@@ -118,9 +118,7 @@
 
 @media screen and (max-width: 600px) {
   .NickNamesArea {
-    /* display: none; */
     width: 100%;
-    /* height: fit-content; */
     border-bottom: solid orange 4px;
   }
   .ChatInputArea {

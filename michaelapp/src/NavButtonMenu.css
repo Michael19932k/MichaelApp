@@ -20,7 +20,7 @@
   display: flex;
   color: white;
   height: 7vh;
-  width: 10vw;
+  width: 20vw;
   margin: 3vw;
   font-size: 16px;
   cursor: pointer;
@@ -28,5 +28,10 @@
   background-color: rgb(223, 127, 3);
   align-items: center;
   justify-content: center;
+}
+@media screen and (max-width: 600px) {
+  .buttonS {
+    width: 30vw;
+  }
 }
 

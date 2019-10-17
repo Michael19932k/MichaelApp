@@ -10,7 +10,7 @@
 }
 
 .minorLinkWindowWrapper{
-  position: absolute;
+  position: relative;
   padding: 25 px;
   border: solid orange 4px;
   background-color: rgba(70, 66, 61, 0.144);
@@ -31,16 +31,14 @@
   color: orange;
 }
 .InfoIconWrapper{
-  position: relative;
-  left: 2vw;
+  position: absolute;
+  top: 6vh;
+  right: 0;
 }
 @media screen and (max-width: 600px) {
   .minorLinkWindowWrapper{
+    position: relative;
     height: fit-content;
     width: fit-content;
   }
-  .InfoIconWrapper{
-    /* left: 4vw; */
-  }
 }
-

@@ -77,6 +77,7 @@ db.once('open', () => {
 const Schema = mongoose.Schema;
 const roomsSchema = new Schema({
     userInRoom: Array,
+    date: Date,
     expireAt: {
         type: Date,
         default: Date.now,
@@ -102,6 +103,7 @@ const usersSchenma = new Schema({
     name: String,
     uid: String,
     rooms: Array,
+    date: Date,
     expireAt: {
         type: Date,
         default: Date.now,

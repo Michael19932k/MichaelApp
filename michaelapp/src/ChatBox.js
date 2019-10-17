@@ -19,9 +19,7 @@ let namesTemp = [];
 function ChatBox({ match }, e, props) {
     const [context,] = useStateValue();
     const [name, setName] = useState(sessionStorage.getItem('name'))
-    // context.setName.userName
-
-    // const [name, setName] = useState(serviceList);
+    
     // ```````````````````````````````````````````````````````````
     const [newMsgs, setNewMsgs] = useState(0);
     const [messages, setMessages] = useState([]);
@@ -55,18 +53,14 @@ function ChatBox({ match }, e, props) {
 
 
         socket.on('message', function (data) {
-            // console.log(data);
             tempSocketMessages.push(data)
             setNewMsgs(counter + 1);
             counter++;
-            // console.log(newMsgs)
         });
 
         socket.on('name', namesArray => {
-            // console.log(namesArray);
             if (namesArray) {
                 namesTemp = namesArray;
-                // console.log(namesTemp);
                 setNames(counter + 1);
                 counter++;
             }
@@ -119,7 +113,6 @@ function ChatBox({ match }, e, props) {
                     }
                     {
                         tempSocketMessages.map((data, index) => {
-                            // console.log(data)
                             return <div className="messageBubble" key={index + 'socket'}><div className="userName">{data.name}</div><div className="messageDate">{data.date.toString().slice(11, -8)}</div>{<br />}{data.message}</div>
                         })
                     }
